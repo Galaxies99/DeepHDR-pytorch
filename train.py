@@ -6,6 +6,7 @@ from torch.utils.data import DataLoader
 from utils.solvers import PolyLR
 from utils.loss import HDRLoss
 from utils.HDRutils import tonemap
+from utils.dataset import dump_sample
 from dataset.HDR import KalantariDataset, KalantariTestDataset
 from models.DeepHDR import DeepHDR
 from utils.configs import Configs
@@ -63,6 +64,9 @@ def train_one_epoch():
         print('--------------- Train Batch %d ---------------' % (idx + 1))
         print('loss: %.12f' % loss.detach().numpy())
 
+        if idx == 0:
+            break
+
 
 
 def eval_one_epoch():
@@ -70,7 +74,8 @@ def eval_one_epoch():
     mean_loss = 0
     count = 0
     for idx, data in enumerate(test_dataloader):
-        in_LDRs, in_HDRs, in_exps, ref_HDRs = data
+        sample_path, in_LDRs, in_HDRs, in_exps, ref_HDRs = data
+        sample_path = sample_path[0]
         # Forward
         with torch.no_grad():
             res = model(in_LDRs, in_HDRs)
@@ -78,6 +83,8 @@ def eval_one_epoch():
         # Compute loss
         with torch.no_grad():
             loss = criterion(tonemap(res), tonemap(ref_HDRs))
+
+        dump_sample(sample_path, res.detach().numpy())
 
         print('--------------- Eval Batch %d ---------------' % (idx + 1))
         print('loss: %.12f' % loss.detach().numpy())

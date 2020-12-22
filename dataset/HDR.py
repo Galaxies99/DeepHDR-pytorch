@@ -1,6 +1,6 @@
 import os
 import cv2
-import glob
+from glob import glob
 import numpy as np
 from utils.dataset import *
 from utils.HDRutils import *
@@ -32,23 +32,20 @@ class KalantariDataset(Dataset):
         if self.count == 0:
             for i, scene_dir in enumerate(self.scene_dirs):
                 cur_scene_dir = os.path.join(filepath, scene_dir)
-                in_LDR_paths = sorted(glob.glob(os.path.join(cur_scene_dir, input_name)))
+                in_LDR_paths = sorted(glob(os.path.join(cur_scene_dir, input_name)))
                 tmp_img = cv2.imread(in_LDR_paths[0]).astype(np.float32)
                 h, w, c = tmp_img.shape
-
                 in_LDRs = np.zeros((h, w, c * self.num_shots))
                 for j, in_LDR_path in enumerate(in_LDR_paths):
-                    in_LDRs[:, :, j * c:(j + 1) * c] = cv2.imread(in_LDR_path).astype(np.float32)
+                    in_LDRs[:, :, j * c:(j + 1) * c] = cv2.imread(in_LDR_path).astype(np.float32) / 255.0
                 in_LDRs = in_LDRs.astype(np.float32)
                 in_exps_path = os.path.join(cur_scene_dir, input_exp_name)
                 in_exps = np.array(open(in_exps_path).read().split('\n')[:self.num_shots]).astype(np.float32)
                 ref_HDR = cv2.imread(os.path.join(cur_scene_dir, ref_hdr_name), -1).astype(np.float32)
-
-                ref_LDR_paths = sorted(glob.glob(os.path.join(cur_scene_dir, ref_name)))
+                ref_LDR_paths = sorted(glob(os.path.join(cur_scene_dir, ref_name)))
                 ref_LDRs = np.zeros((h, w, c * self.num_shots))
                 for j, ref_LDR_path in enumerate(ref_LDR_paths):
-                    ref_LDRs[:, :, j * c:(j + 1) * c] = cv2.imread(ref_LDR_path).astype(np.float32)
-                ref_LDRs = ref_LDRs.astype(np.float32)
+                    ref_LDRs[:, :, j * c:(j + 1) * c] = cv2.imread(ref_LDR_path).astype(np.float32) / 255.0
                 ref_exps_path = os.path.join(cur_scene_dir, ref_exp_name)
                 ref_exps = np.array(open(ref_exps_path).read().split('\n')[:self.num_shots]).astype(np.float32)
 
@@ -73,7 +70,7 @@ class KalantariDataset(Dataset):
                     store_patch(h - self.patch_size, h, w - self.patch_size, w, in_LDRs, in_exps,
                                 ref_HDR, ref_LDRs, ref_exps, self.patch_path, self.count)
                     self.count += 1
-        print('===> Finish preparing training data!')
+        print('====> Finish preparing training data!')
 
     def __len__(self):
         return self.count
@@ -129,10 +126,11 @@ class KalantariTestDataset(Dataset):
         self.patch_size = configs.patch_size
         self.patch_stride = configs.patch_stride
         self.num_shots = configs.num_shots
+        self.sample_path = configs.sample_dir
         self.input_name = input_name
         self.input_exp_name = input_exp_name
         self.ref_hdr_name = ref_hdr_name
-        print('===> Finish preparing training data!')
+        print('====> Finish preparing testing data!')
 
     def __len__(self):
         return self.num_scenes
@@ -140,6 +138,7 @@ class KalantariTestDataset(Dataset):
     def __getitem__(self, index):
         scene_dir = self.scene_dirs[index]
         scene_path = os.path.join(self.filepath, scene_dir)
+        sample_path = os.path.join(self.sample_path, scene_dir)
         LDR_path = os.path.join(scene_path, self.input_name)
         exp_path = os.path.join(scene_path, self.input_exp_name)
         ref_HDR_path = os.path.join(scene_path, self.ref_hdr_name)
@@ -147,7 +146,8 @@ class KalantariTestDataset(Dataset):
         in_LDRs = np.einsum("ijk->kij", in_LDRs)
         in_HDRs = np.einsum("ijk->kij", in_HDRs)
         ref_HDRs = np.einsum("ijk->kij", ref_HDRs)
-        return in_LDRs.copy().astype(np.float32), \
+        return sample_path, \
+               in_LDRs.copy().astype(np.float32), \
                in_HDRs.copy().astype(np.float32), \
                in_exps.copy().astype(np.float32), \
                ref_HDRs.copy().astype(np.float32)

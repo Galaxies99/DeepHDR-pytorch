@@ -71,11 +71,6 @@ class DeepHDR(nn.Module):
         self.num_res_blocks = 9
         self.gf_dim = 64
         self.num_shots = configs.num_shots
-        self.sample_freq = int(100*64/configs.batch_size)
-        if configs.save_freq == 0:
-            self.save_freq = int(500*64/configs.batch_size)
-        else:
-            self.save_freq = configs.save_freq
 
         self.encoder1_1 = nn.Sequential(
             PaddedConv2d(self.c_dim * 2, self.gf_dim, ks=5, stride=2),

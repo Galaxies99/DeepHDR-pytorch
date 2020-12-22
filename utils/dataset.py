@@ -19,7 +19,7 @@ def imsave(images, size, path):
     if path[-4:] == '.hdr':
         return radiance_writer(path, merge(images, size))
     else:
-        return cv2.imwrite(path, merge(images, size)[...,::-1]*255.)
+        return cv2.imwrite(path, merge(images, size)[..., ::-1]*255.)
 
 
 def radiance_writer(out_path, image):
@@ -69,7 +69,7 @@ def get_patch_from_file(pkl_path, pkl_id):
     return res
 
 
-# always return RGB, float32, range -1~1
+# always return RGB, float32, range 0~1
 def get_image(image_path, image_size=None, is_crop=False):
     if is_crop:
         assert (image_size is not None), "the crop size must be specified"
@@ -139,21 +139,13 @@ def get_input(LDR_path, exp_path, ref_HDR_path):
     return in_LDRs, in_HDRs, in_exps, ref_HDR
 
 
-# save sample results
-def save_results(imgs, out_path):
-    imgC = 3
-    batchSz, imgH, imgW, c_ = imgs[0].shape
-    assert (c_ % imgC == 0)
-    ns = c_ // imgC
-
-    nRows = np.ceil(batchSz / 4)
-    nCols = min(4, batchSz)  # 4
-
-    res_imgs = np.zeros((batchSz * len(imgs) * ns, imgH, imgW, imgC))
-    # rearranging the images, this is a bit complicated
-    for n, img in enumerate(imgs):
-        for i in range(batchSz):
-            for j in range(ns):
-                idx = ((i // nCols) * len(imgs) + n) * ns * nCols + (i % nCols) * ns + j
-                res_imgs[idx, :, :, :] = img[i, :, :, j * imgC:(j + 1) * imgC]
-    save_images(res_imgs, [nRows * len(imgs), nCols * ns], out_path)
+def dump_sample(sample_path, img):
+    img = img[0]
+    h, w, _ = img.shape
+    if not os.path.exists(sample_path):
+        os.makedirs(sample_path)
+    file_path = sample_path + '/hdr.png'
+    img = np.einsum('ijk->jki', img)
+    img = tonemap_np(img)
+    img = (img * 255).astype(np.uint8)
+    cv2.imwrite(file_path, img)

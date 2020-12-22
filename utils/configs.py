@@ -17,7 +17,6 @@ class Configs(object):
         self.checkpoint_dir = kwargs.get('checkpoint_dir', 'checkpoint')
         self.sample_dir = kwargs.get('sample_dir', 'samples')
         self.log_dir = kwargs.get('log_dir', 'logs')
-        self.save_freq = kwargs.get('save_freq', 0)
         self.data_path = data_path
         if not os.path.exists(self.checkpoint_dir):
             os.makedirs(self.checkpoint_dir)

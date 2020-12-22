@@ -37,8 +37,9 @@ python3 test.py
 - [x] Evaluating while training
 - [x] Testing codes
 - [ ] Perform the patches calculation in need to save storage
-- [ ] Visualizing codes
+- [x] Visualizing codes
 - [ ] Code re-organization
+- [ ] Demo Display
 
 ### Versions
 
