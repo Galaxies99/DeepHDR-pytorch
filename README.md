@@ -24,8 +24,8 @@ python3 train.py
 
 - [x] Training codes
 - [x] Evaluating while training
-- [ ] Testing codes
-- [ ] Inference codes
+- [x] Testing codes
+- [ ] Visualizing codes
 - [ ] Code re-organization
 
 ### Reference

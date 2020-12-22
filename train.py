@@ -49,7 +49,6 @@ lr_scheduler = PolyLR(optimizer, max_iter=configs.epoch, power=0.9, last_step=st
 
 
 def train_one_epoch():
-    return None
     model.train()
     for idx, data in enumerate(train_dataloader):
         in_LDRs, ref_LDRs, in_HDRs, ref_HDRs, in_exps, ref_exps = data
@@ -91,7 +90,6 @@ def eval_one_epoch():
 
 def train(start_epoch):
     global cur_epoch
-    min_loss = 1e10
     for epoch in range(start_epoch, configs.epoch):
         cur_epoch = epoch
         print('**************** Epoch %d ****************' % (epoch + 1))
@@ -105,6 +103,7 @@ def train(start_epoch):
                      'model_state_dict': model.state_dict()
                      }
         torch.save(save_dict, os.path.join(configs.checkpoint_dir, 'checkpoint.tar'))
+        torch.save(save_dict, os.path.join(configs.checkpoint_dir, 'checkpoint' + str(epoch) + '.tar'))
         print('mean eval loss: %.12f' % loss)
 
 

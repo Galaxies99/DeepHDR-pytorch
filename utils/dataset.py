@@ -119,10 +119,8 @@ def inverse_transform(images):
 
 # get input
 def get_input(LDR_path, exp_path, ref_HDR_path):
-    print(LDR_path)
     in_LDR_paths = sorted(glob(LDR_path))
     ns = len(in_LDR_paths)
-    print(in_LDR_paths)
     tmp_img = cv2.imread(in_LDR_paths[0]).astype(np.float32)
     h, w, c = tmp_img.shape
     h = h // 8 * 8
