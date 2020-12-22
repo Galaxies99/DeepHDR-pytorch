@@ -1,5 +1,5 @@
 # DeepHDR-pytorch
-DeepHDR [1] (ECCV' 18) re-implementation using PyTorch framework
+DeepHDR [1] (ECCV'18) re-implementation using PyTorch framework
 
 ### Introduction
 
@@ -23,6 +23,7 @@ python3 train.py
 ### To-do
 
 - [x] Training codes
+- [x] Evaluating while training
 - [ ] Testing codes
 - [ ] Inference codes
 - [ ] Code re-organization

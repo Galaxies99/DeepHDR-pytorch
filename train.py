@@ -1,11 +1,12 @@
 import os
 import torch
+from tqdm import tqdm
 from torch import optim
 from torch.utils.data import DataLoader
 from utils.solvers import PolyLR
 from utils.loss import HDRLoss
 from utils.HDRutils import tonemap
-from dataset.HDR import KalantariDataset
+from dataset.HDR import KalantariDataset, KalantariTestDataset
 from models.DeepHDR import DeepHDR
 from utils.configs import Configs
 
@@ -17,8 +18,8 @@ configs = Configs()
 train_dataset = KalantariDataset(configs=configs)
 train_dataloader = DataLoader(train_dataset, batch_size=configs.batch_size, shuffle=True)
 
-# test_dataset = KalantariDataset(configs=configs)
-# test_dataloader = DataLoader(test_dataset, batch_size=configs.batch_size, shuffle=True)
+test_dataset = KalantariTestDataset(configs=configs)
+test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=True)
 
 
 # Build DeepHDR model from configs
@@ -27,7 +28,7 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else "cpu")
 model.to(device)
 
 # Define optimizer
-optimizer = optim.Adam(model.parameters(), lr=configs.learning_rate)
+optimizer = optim.Adam(model.parameters(), betas=(configs.beta, 0.999), lr=configs.learning_rate)
 
 # Define Criterion
 criterion = HDRLoss()
@@ -48,6 +49,7 @@ lr_scheduler = PolyLR(optimizer, max_iter=configs.epoch, power=0.9, last_step=st
 
 
 def train_one_epoch():
+    return None
     model.train()
     for idx, data in enumerate(train_dataloader):
         in_LDRs, ref_LDRs, in_HDRs, ref_HDRs, in_exps, ref_exps = data
@@ -60,49 +62,50 @@ def train_one_epoch():
         optimizer.zero_grad()
 
         print('--------------- Train Batch %d ---------------' % (idx + 1))
-        print('loss:', loss.detach().numpy())
+        print('loss: %.12f' % loss.detach().numpy())
 
-'''
+
+
 def eval_one_epoch():
     model.eval()
     mean_loss = 0
     count = 0
     for idx, data in enumerate(test_dataloader):
+        in_LDRs, in_HDRs, in_exps, ref_HDRs = data
         # Forward
         with torch.no_grad():
-            res = model(data)
+            res = model(in_LDRs, in_HDRs)
 
         # Compute loss
         with torch.no_grad():
-            loss = criterion(tonemap(res), tonemap(data['ref_HDR']))
+            loss = criterion(tonemap(res), tonemap(ref_HDRs))
 
         print('--------------- Eval Batch %d ---------------' % (idx + 1))
-        print('loss:', loss)
-        mean_loss += loss
+        print('loss: %.12f' % loss.detach().numpy())
+        mean_loss += loss.detach().numpy()
         count += 1
 
     mean_loss = mean_loss / count
     return mean_loss
-'''
+
 
 def train(start_epoch):
     global cur_epoch
     min_loss = 1e10
-    loss = 0
     for epoch in range(start_epoch, configs.epoch):
         cur_epoch = epoch
         print('**************** Epoch %d ****************' % (epoch + 1))
         print('learning rate: %f' % (lr_scheduler.get_last_lr()[0]))
         train_one_epoch()
-        # loss = eval_one_epoch()
+        loss = eval_one_epoch()
         lr_scheduler.step()
         save_dict = {'epoch': epoch + 1,
                      'optimizer_state_dict': optimizer.state_dict(),
-        #             'loss': loss,
+                     'loss': loss,
                      'model_state_dict': model.state_dict()
                      }
         torch.save(save_dict, os.path.join(configs.checkpoint_dir, 'checkpoint.tar'))
-        # print('mean eval loss: %.10f' % loss.detach().numpy())
+        print('mean eval loss: %.12f' % loss)
 
 
 if __name__ == '__main__':

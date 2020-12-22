@@ -145,7 +145,6 @@ class DeepHDR(nn.Module):
         image1 = torch.cat([in_LDR[:, 0:self.c_dim, :, :], in_HDR[:, 0:self.c_dim, :, :]], 1)
         image2 = torch.cat([in_LDR[:, self.c_dim:self.c_dim * 2, :, :], in_HDR[:, self.c_dim:self.c_dim * 2, :, :]], 1)
         image3 = torch.cat([in_LDR[:, self.c_dim * 2:self.c_dim * 3, :, :], in_HDR[:, self.c_dim * 2:self.c_dim * 3, :, :]], 1)
-
         en1_t = self.encoder1_1(image1)
         en1 = self.encoder1_2(en1_t)
         en2_t = self.encoder2_1(image2)
@@ -153,11 +152,8 @@ class DeepHDR(nn.Module):
         en3_t = self.encoder3_1(image3)
         en3 = self.encoder3_2(en3_t)
         en_all = torch.cat([en1, en2, en3], 1)
-
         merger_res = self.merger(en_all)
-
         residual_res = self.residual_layer(merger_res)
-
         res0 = torch.cat([residual_res, merger_res], 1)
         res1 = self.decoder1(res0)
         res1 = torch.cat([res1, en1, en2, en3], 1)

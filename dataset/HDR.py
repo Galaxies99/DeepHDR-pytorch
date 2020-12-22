@@ -1,43 +1,11 @@
 import os
 import cv2
 import glob
-import torch
 import numpy as np
-import pickle
-from tqdm import tqdm
+from utils.dataset import *
 from utils.HDRutils import *
 from torch.utils.data import Dataset
 
-
-def store_patch(h1, h2, w1, w2, in_LDRs, in_exps, ref_HDR, ref_LDRs, ref_exps, save_path, save_id):
-    in_LDRs_patch = in_LDRs[h1:h2, w1:w2, :]
-    in_LDRs_patch_1 = in_LDRs_patch[:, :, 2::-1]
-    in_LDRs_patch_2 = in_LDRs_patch[:, :, 5:2:-1]
-    in_LDRs_patch_3 = in_LDRs_patch[:, :, 8:5:-1]
-    in_LDRs_patch = np.concatenate([in_LDRs_patch_1, in_LDRs_patch_2, in_LDRs_patch_3], axis=2)
-    ref_HDR_patch = ref_HDR[h1:h2, w1:w2, ::-1]
-    ref_LDRs_patch = ref_LDRs[h1:h2, w1:w2, :]
-    ref_LDRs_patch_1 = ref_LDRs_patch[:, :, 2::-1]
-    ref_LDRs_patch_2 = ref_LDRs_patch[:, :, 5:2:-1]
-    ref_LDRs_patch_3 = ref_LDRs_patch[:, :, 8:5:-1]
-    ref_LDRs_patch = np.concatenate([ref_LDRs_patch_1, ref_LDRs_patch_2, ref_LDRs_patch_3], axis=2)
-
-    res = {
-        'in_LDR': in_LDRs_patch,
-        'ref_LDR': ref_LDRs_patch,
-        'ref_HDR': ref_HDR_patch,
-        'in_exp': in_exps,
-        'ref_exp': ref_exps,
-    }
-
-    with open(save_path + '/' + str(save_id) + '.pkl', 'wb') as pkl_file:
-        pickle.dump(res, pkl_file)
-
-
-def get_patch(pkl_path, pkl_id):
-    with open(pkl_path + '/' + str(pkl_id) + '.pkl', 'rb') as pkl_file:
-        res = pickle.load(pkl_file)
-    return res
 
 
 class KalantariDataset(Dataset):
@@ -48,6 +16,7 @@ class KalantariDataset(Dataset):
                  ref_exp_name = 'ref_exp.txt',
                  ref_hdr_name = 'ref_hdr_aligned.hdr'):
         super().__init__()
+        print('====> Start preparing training data.')
         filepath = os.path.join(configs.data_path, 'train')
         self.scene_dirs = [scene_dir for scene_dir in os.listdir(filepath)
                             if os.path.isdir(os.path.join(filepath, scene_dir))]
@@ -57,12 +26,11 @@ class KalantariDataset(Dataset):
         self.patch_size = configs.patch_size
         self.patch_stride = configs.patch_stride
         self.num_shots = configs.num_shots
-        self.batch_size = configs.batch_size
         self.patch_path = configs.patch_dir
         self.count = len(os.listdir(self.patch_path))
 
         if self.count == 0:
-            for i, scene_dir in tqdm(enumerate(self.scene_dirs)):
+            for i, scene_dir in enumerate(self.scene_dirs):
                 cur_scene_dir = os.path.join(filepath, scene_dir)
                 in_LDR_paths = sorted(glob.glob(os.path.join(cur_scene_dir, input_name)))
                 tmp_img = cv2.imread(in_LDR_paths[0]).astype(np.float32)
@@ -105,7 +73,7 @@ class KalantariDataset(Dataset):
                     store_patch(h - self.patch_size, h, w - self.patch_size, w, in_LDRs, in_exps,
                                 ref_HDR, ref_LDRs, ref_exps, self.patch_path, self.count)
                     self.count += 1
-        print('Finish preparing Data!')
+        print('===> Finish preparing training data!')
 
     def __len__(self):
         return self.count
@@ -113,7 +81,7 @@ class KalantariDataset(Dataset):
     def __getitem__(self, index):
         distortions = np.random.uniform(0.0, 1.0, 2)
 
-        data = get_patch(self.patch_path, index)
+        data = get_patch_from_file(self.patch_path, index)
         in_LDR = data['in_LDR']
         ref_LDR = data['ref_LDR']
         ref_HDR = data['ref_HDR']
@@ -144,3 +112,43 @@ class KalantariDataset(Dataset):
         return in_LDR.copy().astype(np.float32), ref_LDR.copy().astype(np.float32), \
                in_HDR.copy().astype(np.float32), ref_HDR.copy().astype(np.float32), \
                in_exp.copy().astype(np.float32), ref_exp.copy().astype(np.float32)
+
+
+class KalantariTestDataset(Dataset):
+    def __init__(self, configs,
+                 input_name= 'input_*_aligned.tif',
+                 input_exp_name = 'input_exp.txt',
+                 ref_hdr_name = 'ref_hdr_aligned.hdr'):
+        super().__init__()
+        print('====> Start preparing testing data.')
+        self.filepath = os.path.join(configs.data_path, 'test')
+        self.scene_dirs = [scene_dir for scene_dir in os.listdir(self.filepath)
+                            if os.path.isdir(os.path.join(self.filepath, scene_dir))]
+        self.scene_dirs = sorted(self.scene_dirs)
+        self.num_scenes = len(self.scene_dirs)
+        self.patch_size = configs.patch_size
+        self.patch_stride = configs.patch_stride
+        self.num_shots = configs.num_shots
+        self.input_name = input_name
+        self.input_exp_name = input_exp_name
+        self.ref_hdr_name = ref_hdr_name
+        print('===> Finish preparing training data!')
+
+    def __len__(self):
+        return self.num_scenes
+
+    def __getitem__(self, index):
+        scene_dir = self.scene_dirs[index]
+        scene_path = os.path.join(self.filepath, scene_dir)
+        LDR_path = os.path.join(scene_path, self.input_name)
+        exp_path = os.path.join(scene_path, self.input_exp_name)
+        ref_HDR_path = os.path.join(scene_path, self.ref_hdr_name)
+        in_LDRs, in_HDRs, in_exps, ref_HDRs = get_input(LDR_path, exp_path, ref_HDR_path)
+        in_LDRs = np.einsum("ijk->kij", in_LDRs)
+        in_HDRs = np.einsum("ijk->kij", in_HDRs)
+        ref_HDRs = np.einsum("ijk->kij", ref_HDRs)
+        return in_LDRs.copy().astype(np.float32), \
+               in_HDRs.copy().astype(np.float32), \
+               in_exps.copy().astype(np.float32), \
+               ref_HDRs.copy().astype(np.float32)
+
