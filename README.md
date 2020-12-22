@@ -26,7 +26,8 @@ python3 train.py
 
 First, make sure that you have models (`checkpoint.tar`) under `checkpoint_dir` (which is defined in `Configs()`).
 
-```
+```bash
+export CUDA_VISIBLE_DEVICES=0
 python3 test.py
 ```
 
@@ -39,11 +40,17 @@ python3 test.py
 - [ ] Visualizing codes
 - [ ] Code re-organization
 
+### Versions
+
+- **v0.3 (Current version)**: Complete testing codes.
+- v0.2: Complete the training codes to support evaluating in training process.
+- v0.1: Build the model framework and write dataset codes, training codes and utility codes.
+
 ### Reference
 
 [1] Wu, Shangzhe, et al. "Deep high dynamic range imaging with large foreground motions." *Proceedings of the European Conference on Computer Vision (ECCV)*. 2018.
 
-[2] https://github.com/elliottwu/DeepHDR
+[2] elliottwu/DeepHDR repository: https://github.com/elliottwu/DeepHDR
 
 
 
