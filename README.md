@@ -20,6 +20,8 @@ export CUDA_VISIBLE_DEVICES=0
 python3 train.py
 ```
 
+**Note**. To generate the data patches, you need at least 200 GB free storage in the folder. We will fix this data issue soon.
+
 ### Test
 
 First, make sure that you have models (`checkpoint.tar`) under `checkpoint_dir` (which is defined in `Configs()`).
@@ -33,6 +35,7 @@ python3 test.py
 - [x] Training codes
 - [x] Evaluating while training
 - [x] Testing codes
+- [ ] Perform the patches calculation in need to save storage
 - [ ] Visualizing codes
 - [ ] Code re-organization
 
