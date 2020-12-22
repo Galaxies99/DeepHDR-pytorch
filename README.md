@@ -11,13 +11,21 @@ The Kalantari Dataset can be downloaded from https://www.robots.ox.ac.uk/~szwu/s
 
 ### Configs Modifications
 
-You may modify the arguments in `utils/configs.py` to satisfy your own environment.
+You may modify the arguments in `Configs()` to satisfy your own environment, for specific arguments descriptions, see `utils/configs.py`.
 
 ### Train
 
 ```bash
 export CUDA_VISIBLE_DEVICES=0
 python3 train.py
+```
+
+### Test
+
+First, make sure that you have models (`checkpoint.tar`) under `checkpoint_dir` (which is defined in `Configs()`).
+
+```
+python3 test.py
 ```
 
 ### To-do
