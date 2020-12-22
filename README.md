@@ -31,6 +31,8 @@ export CUDA_VISIBLE_DEVICES=0
 python3 test.py
 ```
 
+**Note**. `test.py` will dump the result images in `sample` folder.
+
 ### To-do
 
 - [x] Training codes
@@ -43,7 +45,8 @@ python3 test.py
 
 ### Versions
 
-- **v0.3 (Current version)**: Complete testing codes.
+- **v0.4 (Current version)**: Complete  visualization codes.
+- v0.3: Complete testing codes.
 - v0.2: Complete the training codes to support evaluating in training process.
 - v0.1: Build the model framework and write dataset codes, training codes and utility codes.
 
