@@ -52,9 +52,10 @@ class ResidualBlocks(nn.Module):
     def __init__(self, block_num, dim, ks=3, stride=1):
         super().__init__()
         self.block_num = block_num
-        self.res_blocks = []
+        self.res_blocks = nn.Sequential()
         for i in range(self.block_num):
-            self.res_blocks.append(ResidualBlock(dim, ks=ks, stride=stride))
+            self.res_blocks.add_module('Residual' + str(i), ResidualBlock(dim, ks=ks, stride=stride))
+            
 
     def forward(self, x):
         y = x
