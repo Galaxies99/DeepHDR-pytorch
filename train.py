@@ -86,7 +86,7 @@ def eval_one_epoch():
             loss = criterion(tonemap(res), tonemap(ref_HDRs))
         dump_sample(sample_path, res.cpu().detach().numpy())
         print('--------------- Eval Batch %d ---------------' % (idx + 1))
-        print('loss: %.12f' % loss.detach().numpy())
+        print('loss: %.12f' % loss.cpu().detach().numpy())
         mean_loss += loss.cpu().detach().numpy()
         count += 1
 
