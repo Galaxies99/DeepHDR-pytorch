@@ -58,7 +58,7 @@ This is a demo display of the testing dataset `002` using the model after 13 epo
 **Original Image**
 
 <table>
-  <tr><td align="center"> LDR Image </td><td><img src='sample/002/input_1_aligned.tif'></td><td><img src='sample/002/input_2_aligned.tif'></td><td><img src='sample/002/input_3_aligned.tif'></td></tr>
+  <tr><td align="center"> LDR Image </td><td><img src='sample/002/input_1_aligned.jpg'></td><td><img src='sample/002/input_2_aligned.jpg'></td><td><img src='sample/002/input_3_aligned.jpg'></td></tr>
   <tr><td align="center"> Exposure Bias</td><td align="center">0</td><td align="center">3</td><td align="center">6</td></td></tr>
 </table>
 
