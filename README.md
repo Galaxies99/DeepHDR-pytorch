@@ -10,8 +10,7 @@ This repository is the re-implementation of DeepHDR [1] using PyTorch framework.
 - PyTorch 1.4+
 - Cuda version 10.1+
 - OpenCV
-- Numpy
-- Tqdm
+- numpy, tqdm, scipy, etc.
 
 ## Getting Started
 
@@ -30,7 +29,7 @@ export CUDA_VISIBLE_DEVICES=0
 python3 train.py
 ```
 
-**Note**. To generate the data patches, you need at least 200 GB free storage in the folder. We will fix this data issue soon.
+**Note**. To generate the data patches, you need ~200 GB free storage in the folder. We will fix this data issue soon.
 
 ### Test
 
@@ -52,6 +51,8 @@ python3 test.py
 - [x] Visualizing codes
 - [ ] Code re-organization
 - [ ] Demo Display
+- [ ] Command-line configurations support
+- [ ] Pre-trained model upload
 
 ## Versions
 
