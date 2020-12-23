@@ -2,7 +2,7 @@ import os
 import cv2
 from glob import glob
 import numpy as np
-from utils.dataset import *
+from utils.dataprocessor import *
 from utils.HDRutils import *
 from torch.utils.data import Dataset
 

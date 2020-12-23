@@ -4,14 +4,16 @@ from torch import optim
 from torch.utils.data import DataLoader
 from utils.loss import HDRLoss
 from utils.HDRutils import tonemap
-from utils.dataset import dump_sample
+from utils.dataprocessor import dump_sample
 from dataset.HDR import KalantariTestDataset
 from models.DeepHDR import DeepHDR
 from utils.configs import Configs
 
 
 # Get configurations
-configs = Configs()
+# configs = Configs()
+configs = Configs(data_path='/Users/galaxies/Documents/Benchmark/kalantari_dataset')
+
 
 # Load dataset
 test_dataset = KalantariTestDataset(configs=configs)
@@ -70,7 +72,7 @@ def test_one_epoch():
 
 def test():
     loss = test_one_epoch()
-    print('mean eval loss: %.12f' % loss)
+    print('mean test loss: %.12f' % loss)
 
 
 if __name__ == '__main__':

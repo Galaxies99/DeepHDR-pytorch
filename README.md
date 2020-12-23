@@ -42,21 +42,46 @@ python3 test.py
 
 **Note**. `test.py` will dump the result images in `sample` folder.
 
-## To-do
+### Tone-mapping (post-processing)
+
+Generated HDR images are in `.hdr` format, which may not be properly displayed in your image viewer directly. You may use [Photomatix](https://www.hdrsoft.com/) for tonemapping [2]:
+
+- Download [Photomatix](https://www.hdrsoft.com/) free trial, which won't expire.
+- Load the generated `.hdr` file in Photomatix.
+- Adjust the parameter settings. You may refer to pre-defined styles, such as `Detailed` and `Painterly2`.
+- Save your final image in `.tif` or `.jpg`.
+
+## Sample
+
+This is a demo display of the testing dataset `002` using the model after 13 epochs' trainning.
+
+**Original Image**
+
+<table>
+  <tr><td align="center"> LDR Image </td><td><img src='sample/002/input_1_aligned.tif'></td><td><img src='sample/002/input_2_aligned.tif'></td><td><img src='sample/002/input_3_aligned.tif'></td></tr>
+  <tr><td align="center"> Exposure Bias</td><td align="center">0</td><td align="center">3</td><td align="center">6</td></td></tr>
+</table>
+
+**HDR Image (after tonemapping)**
+
+<img src='sample/002/hdr_epoch13.jpg' style="zoom:30%">
+
+## To-dos
 
 - [x] Training codes
 - [x] Evaluating while training
 - [x] Testing codes
 - [ ] Perform the patches calculation in need to save storage
 - [x] Visualizing codes
-- [ ] Code re-organization
-- [ ] Demo Display
+- [x] Code re-organization
+- [x] Sample
 - [ ] Command-line configurations support
 - [ ] Pre-trained model upload
 
 ## Versions
 
-- **v0.5 (Current version)**: Modify the codes to satisfy CUDA environment. 
+- **v0.6 (Current Version)**: Update demo display
+- v0.5: Modify the codes to satisfy CUDA environment. 
 - v0.4: Complete  visualization codes.
 - v0.3: Complete testing codes.
 - v0.2: Complete the training codes to support evaluating in training process.

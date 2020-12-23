@@ -1,12 +1,11 @@
 import os
 import torch
-from tqdm import tqdm
 from torch import optim
 from torch.utils.data import DataLoader
 from utils.solvers import PolyLR
 from utils.loss import HDRLoss
 from utils.HDRutils import tonemap
-from utils.dataset import dump_sample
+from utils.dataprocessor import dump_sample
 from dataset.HDR import KalantariDataset, KalantariTestDataset
 from models.DeepHDR import DeepHDR
 from utils.configs import Configs
@@ -14,6 +13,8 @@ from utils.configs import Configs
 
 # Get configurations
 configs = Configs()
+# configs = Configs(data_path='/Users/galaxies/Documents/Benchmark/kalantari_dataset')
+
 
 # Load Data & build dataset
 train_dataset = KalantariDataset(configs=configs)
