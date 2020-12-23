@@ -3,9 +3,9 @@ import os
 class Configs(object):
     def __init__(self, data_path='/home/ubuntu/benchmark/kalantari_dataset/',
                  **kwargs):
-        self.epoch = kwargs.get('epoch', 25)
-        self.learning_rate = kwargs.get('learning_rate', 0.0002)
-        self.beta = kwargs.get('beta', 0.5)
+        self.epoch = kwargs.get('epoch', 50)
+        self.learning_rate = kwargs.get('learning_rate', 0.001)
+        self.beta = kwargs.get('beta', 0.9)
         self.load_size = kwargs.get('load_size', 250)
         self.patch_size = kwargs.get('patch_size', 256)
         self.image_size = kwargs.get('image_size', (256, 256))

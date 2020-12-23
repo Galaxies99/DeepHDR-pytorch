@@ -144,8 +144,7 @@ def dump_sample(sample_path, img):
     h, w, _ = img.shape
     if not os.path.exists(sample_path):
         os.makedirs(sample_path)
-    file_path = sample_path + '/hdr.png'
+    file_path = sample_path + '/hdr.hdr'
+    img = inverse_transform(img)
     img = np.einsum('ijk->jki', img)
-    img = tonemap_np(img)
-    img = (img * 255).astype(np.uint8)
-    cv2.imwrite(file_path, img)
+    radiance_writer(file_path, img)
