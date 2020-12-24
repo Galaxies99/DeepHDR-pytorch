@@ -81,10 +81,12 @@ This is a demo display of the testing dataset `002` using the model after only 1
 - [x] Sample
 - [ ] Command-line configurations support
 - [ ] Pre-trained model upload
+- [x] Multi-gpu support
 
 ## Versions
 
-- **v0.7 (Current Version)**: Update dataset selection and fix some bugs.
+- **v0.8 (Current Version)**: Add multi-gpu support.
+- v0.7: Update dataset selection and fix some bugs.
 - v0.6: Update demo display.
 - v0.5: Modify the codes to satisfy CUDA environment. 
 - v0.4: Complete  visualization codes.

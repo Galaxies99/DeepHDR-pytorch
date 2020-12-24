@@ -1,5 +1,6 @@
 import os
 import torch
+
 from torch import optim
 from torch.utils.data import DataLoader
 from utils.solvers import PolyLR
@@ -26,8 +27,19 @@ test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=True)
 
 # Build DeepHDR model from configs
 model = DeepHDR(configs)
-device = torch.device('cuda:0' if torch.cuda.is_available() else "cpu")
-model.to(device)
+if configs.multigpu is True:
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    model.to(device)
+else:
+    devices = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    if devices == torch.device('cpu'):
+        raise EnvironmentError('No GPUs, cannot initialize multigpu training.')
+    model.to(devices)
+    model = torch.nn.DataParallel(model)
+
+
+if configs.multigpu is True:
+    model = nn.DataParallel(model)
 
 # Define optimizer
 optimizer = optim.Adam(model.parameters(), betas=(configs.beta1, configs.beta2), lr=configs.learning_rate)
@@ -105,11 +117,18 @@ def train(start_epoch):
         train_one_epoch()
         loss = eval_one_epoch()
         lr_scheduler.step()
-        save_dict = {'epoch': epoch + 1, 'loss': loss,
-                     'optimizer_state_dict': optimizer.state_dict(),
-                     'model_state_dict': model.state_dict(),
-                     'scheduler': lr_scheduler.state_dict()
-                     }
+        if configs.multigpu is False:
+            save_dict = {'epoch': epoch + 1, 'loss': loss,
+                         'optimizer_state_dict': optimizer.state_dict(),
+                         'model_state_dict': model.state_dict(),
+                         'scheduler': lr_scheduler.state_dict()
+                         }
+        else:
+            save_dict = {'epoch': epoch + 1, 'loss': loss,
+                         'optimizer_state_dict': optimizer.state_dict(),
+                         'model_state_dict': model.module.state_dict(),
+                         'scheduler': lr_scheduler.state_dict()
+                         }
         torch.save(save_dict, os.path.join(configs.checkpoint_dir, 'checkpoint.tar'))
         torch.save(save_dict, os.path.join(configs.checkpoint_dir, 'checkpoint' + str(epoch) + '.tar'))
         print('mean eval loss: %.12f' % loss)
