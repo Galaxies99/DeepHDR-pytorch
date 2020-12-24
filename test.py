@@ -37,7 +37,6 @@ if os.path.isfile(checkpoint_file):
     model.load_state_dict(checkpoint['model_state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
     start_epoch = checkpoint['epoch']
-    lr_scheduler = checkpoint['scheduler']
     print("Load checkpoint %s (epoch %d)", checkpoint_file, start_epoch)
 else:
     raise ModuleNotFoundError('No checkpoint files.')
