@@ -35,6 +35,9 @@ optimizer = optim.Adam(model.parameters(), betas=(configs.beta1, configs.beta2),
 # Define Criterion
 criterion = HDRLoss()
 
+# Define Scheduler
+lr_scheduler = PolyLR(optimizer, max_iter=configs.epoch, power=0.9)
+
 # Read checkpoints
 start_epoch = 0
 checkpoint_file = configs.checkpoint_dir + '/checkpoint.tar'
@@ -43,10 +46,9 @@ if os.path.isfile(checkpoint_file):
     model.load_state_dict(checkpoint['model_state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
     start_epoch = checkpoint['epoch']
-    lr_scheduler = checkpoint['scheduler']
+    lr_scheduler.load_state_dict(checkpoint['scheduler'])
     print("Load checkpoint %s (epoch %d)", checkpoint_file, start_epoch)
-else:
-    lr_scheduler = PolyLR(optimizer, max_iter=configs.epoch, power=0.9)
+    
 
 
 def train_one_epoch():
