@@ -30,7 +30,7 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else "cpu")
 model.to(device)
 
 # Define optimizer
-optimizer = optim.Adam(model.parameters(), betas=(configs.beta, 0.999), lr=configs.learning_rate)
+optimizer = optim.Adam(model.parameters(), betas=(configs.beta1, configs.beta2), lr=configs.learning_rate)
 
 # Define Criterion
 criterion = HDRLoss()
@@ -43,11 +43,10 @@ if os.path.isfile(checkpoint_file):
     model.load_state_dict(checkpoint['model_state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
     start_epoch = checkpoint['epoch']
+    lr_scheduler = checkpoint['scheduler']
     print("Load checkpoint %s (epoch %d)", checkpoint_file, start_epoch)
-cur_epoch = start_epoch
-
-# Learning rate scheduler
-lr_scheduler = PolyLR(optimizer, max_iter=configs.epoch, power=0.9, last_step=start_epoch-1)
+else:
+    lr_scheduler = PolyLR(optimizer, max_iter=configs.epoch, power=0.9)
 
 
 def train_one_epoch():
@@ -104,10 +103,10 @@ def train(start_epoch):
         train_one_epoch()
         loss = eval_one_epoch()
         lr_scheduler.step()
-        save_dict = {'epoch': epoch + 1,
+        save_dict = {'epoch': epoch + 1, 'loss': loss,
                      'optimizer_state_dict': optimizer.state_dict(),
-                     'loss': loss,
-                     'model_state_dict': model.state_dict()
+                     'model_state_dict': model.state_dict(),
+                     'scheduler': lr_scheduler.state_dict()
                      }
         torch.save(save_dict, os.path.join(configs.checkpoint_dir, 'checkpoint.tar'))
         torch.save(save_dict, os.path.join(configs.checkpoint_dir, 'checkpoint' + str(epoch) + '.tar'))

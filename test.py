@@ -11,8 +11,8 @@ from utils.configs import Configs
 
 
 # Get configurations
-# configs = Configs()
-configs = Configs(data_path='/Users/galaxies/Documents/Benchmark/kalantari_dataset')
+configs = Configs()
+# configs = Configs(data_path='/Users/galaxies/Documents/Benchmark/kalantari_dataset')
 
 
 # Load dataset
@@ -36,7 +36,9 @@ if os.path.isfile(checkpoint_file):
     checkpoint = torch.load(checkpoint_file)
     model.load_state_dict(checkpoint['model_state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-    print("Load checkpoint %s" % checkpoint_file)
+    start_epoch = checkpoint['epoch']
+    lr_scheduler = checkpoint['scheduler']
+    print("Load checkpoint %s (epoch %d)", checkpoint_file, start_epoch)
 else:
     raise ModuleNotFoundError('No checkpoint files.')
 

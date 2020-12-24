@@ -33,22 +33,10 @@ def radiance_writer(out_path, image):
 
 
 def store_patch(h1, h2, w1, w2, in_LDRs, in_exps, ref_HDR, ref_LDRs, ref_exps, save_path, save_id):
-    in_LDRs_patch = in_LDRs[h1:h2, w1:w2, :]
-    in_LDRs_patch_1 = in_LDRs_patch[:, :, 2::-1]
-    in_LDRs_patch_2 = in_LDRs_patch[:, :, 5:2:-1]
-    in_LDRs_patch_3 = in_LDRs_patch[:, :, 8:5:-1]
-    in_LDRs_patch = np.concatenate([in_LDRs_patch_1, in_LDRs_patch_2, in_LDRs_patch_3], axis=2)
-    ref_HDR_patch = ref_HDR[h1:h2, w1:w2, ::-1]
-    ref_LDRs_patch = ref_LDRs[h1:h2, w1:w2, :]
-    ref_LDRs_patch_1 = ref_LDRs_patch[:, :, 2::-1]
-    ref_LDRs_patch_2 = ref_LDRs_patch[:, :, 5:2:-1]
-    ref_LDRs_patch_3 = ref_LDRs_patch[:, :, 8:5:-1]
-    ref_LDRs_patch = np.concatenate([ref_LDRs_patch_1, ref_LDRs_patch_2, ref_LDRs_patch_3], axis=2)
-
     res = {
-        'in_LDR': in_LDRs_patch,
-        'ref_LDR': ref_LDRs_patch,
-        'ref_HDR': ref_HDR_patch,
+        'in_LDR': in_LDRs,
+        'ref_LDR': ref_LDRs,
+        'ref_HDR': ref_HDR,
         'in_exp': in_exps,
         'ref_exp': ref_exps,
     }
