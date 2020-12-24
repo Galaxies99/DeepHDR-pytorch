@@ -57,7 +57,7 @@ Generated HDR images are in `.hdr` format, which may not be properly displayed i
 
 ## Sample
 
-This is a demo display of the testing dataset `002` using the model after 13 epochs' trainning.
+This is a demo display of the testing dataset `002` using the model after only 1 epoch's trainning.
 
 **Original Image**
 
@@ -68,7 +68,7 @@ This is a demo display of the testing dataset `002` using the model after 13 epo
 
 **HDR Image (after tonemapping)**
 
-<img src='sample/002/hdr_epoch13.jpg' style="zoom:30%">
+<img src='sample/002/hdr_tonemapping.jpg' style="zoom:30%">
 
 ## To-dos
 
