@@ -18,6 +18,10 @@ This repository is the re-implementation of DeepHDR [1] using PyTorch framework.
 
 The Kalantari Dataset can be downloaded from https://www.robots.ox.ac.uk/~szwu/storage/hdr/kalantari_dataset.zip [2].
 
+### Dataset Model Selection
+
+There are two dataset models provided in `dataset` folder. Using `HDRpatches.py` will generate patches in `patches` folder and will cost ~200GB spaces, but it runs faster. Using `HDR.py` (default) will open image file only when it needs to do so, thus it will save disk space. Feel free to choose the method you want.
+
 ### Configs Modifications
 
 You may modify the arguments in `Configs()` to satisfy your own environment, for specific arguments descriptions, see `utils/configs.py`.
@@ -29,7 +33,7 @@ export CUDA_VISIBLE_DEVICES=0
 python3 train.py
 ```
 
-**Note**. To generate the data patches, you need ~200 GB free storage in the folder. We will fix this data issue soon.
+**Note**. 
 
 ### Test
 
@@ -80,7 +84,8 @@ This is a demo display of the testing dataset `002` using the model after 13 epo
 
 ## Versions
 
-- v0.6 (Current Version): Update demo display
+- **v0.7 (Current Version)**: Update dataset selection and fix some bugs.
+- v0.6: Update demo display.
 - v0.5: Modify the codes to satisfy CUDA environment. 
 - v0.4: Complete  visualization codes.
 - v0.3: Complete testing codes.
