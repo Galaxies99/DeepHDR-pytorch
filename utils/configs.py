@@ -5,9 +5,10 @@ class Configs(object):
                  **kwargs):
         self.epoch = kwargs.get('epoch', 50)
         self.learning_rate = kwargs.get('learning_rate', 0.001)
-        self.beta = kwargs.get('beta', 0.9)
+        self.beta1 = kwargs.get('beta1', 0.9)
+        self.beta2 = kwargs.get('beta2', 0.999)
         self.load_size = kwargs.get('load_size', 250)
-        self.patch_size = kwargs.get('patch_size', 256)
+        self.patch_size = kwargs.get('patch_size', (256, 256))
         self.image_size = kwargs.get('image_size', (256, 256))
         self.patch_stride = kwargs.get('patch_stride', 64)
         self.patch_dir = kwargs.get('patch_dir', 'patches')
