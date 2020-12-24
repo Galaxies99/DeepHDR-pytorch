@@ -37,10 +37,6 @@ else:
     model.to(devices)
     model = torch.nn.DataParallel(model)
 
-
-if configs.multigpu is True:
-    model = nn.DataParallel(model)
-
 # Define optimizer
 optimizer = optim.Adam(model.parameters(), betas=(configs.beta1, configs.beta2), lr=configs.learning_rate)
 
