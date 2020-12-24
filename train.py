@@ -106,7 +106,7 @@ def train(start_epoch):
         save_dict = {'epoch': epoch + 1, 'loss': loss,
                      'optimizer_state_dict': optimizer.state_dict(),
                      'model_state_dict': model.state_dict(),
-                     'scheduler': lr_scheduler.dict()
+                     'scheduler': lr_scheduler.state_dict()
                      }
         torch.save(save_dict, os.path.join(configs.checkpoint_dir, 'checkpoint.tar'))
         torch.save(save_dict, os.path.join(configs.checkpoint_dir, 'checkpoint' + str(epoch) + '.tar'))
