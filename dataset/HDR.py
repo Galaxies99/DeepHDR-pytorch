@@ -32,21 +32,23 @@ class KalantariDataset(Dataset):
         self.input_exp_name = input_exp_name
         self.ref_exp_name = ref_exp_name
         self.ref_hdr_name = ref_hdr_name
-
+        self.total_count = 0
         # Count the number of patches in each trainning image
         self.count = []
         for i, scene_dir in enumerate(self.scene_dirs):
             cur_scene_dir = os.path.join(self.filepath, scene_dir)
             in_LDR_paths = sorted(glob(os.path.join(cur_scene_dir, input_name)))
-            tmp_img = cv2.imread(in_LDR_paths[0]).astype(np.float32)
+            tmp_img = get_image(in_LDR_paths[0]).astype(np.float32)
             h, w, c = tmp_img.shape
             if h < self.patch_size[0] or w < self.patch_size[1]:
                 raise AttributeError('The size of some trainning images are smaller than the patch size.')
-            h_count = np.ceil(h / self.patch_size[0])
-            w_count = np.ceil(w / self.patch_size[1])
+            h_count = np.ceil(h / self.patch_stride)
+            w_count = np.ceil(w / self.patch_stride)
             self.count.append(h_count * w_count)
+            self.total_count = self.total_count + h_count * w_count
         self.count = np.array(self.count).astype(int)
-        self.total_count = np.sum(self.count)
+        self.total_count = int(self.total_count)
+
         print('====> Finish preparing training data!')
 
     def __len__(self):
@@ -70,24 +72,24 @@ class KalantariDataset(Dataset):
             raise ValueError('Index out of bound')
 
         in_LDR_paths = sorted(glob(os.path.join(cur_scene_dir, self.input_name)))
-        tmp_img = imread(in_LDR_paths[0])
+        tmp_img = get_image(in_LDR_paths[0])
         h, w, c = tmp_img.shape
 
         # Count the indices of h and w
-        h_count = np.ceil(h / self.patch_size[0])
-        w_count = np.ceil(w / self.patch_size[1])
+        h_count = np.ceil(h / self.patch_stride)
+        w_count = np.ceil(w / self.patch_stride)
         h_idx = int(scene_posidx / w_count)
         w_idx = int(scene_posidx - h_idx * w_count)
 
         # Count the up, down, left, right of the patch
-        h_up = h_idx * self.patch_size[0]
-        h_down = (h_idx + 1) * self.patch_size[0]
+        h_up = h_idx * self.patch_stride
+        h_down = h_idx * self.patch_stride + self.patch_size[0]
         if h_down > h:
             h_up = h - self.patch_size[0]
             h_down = h
 
-        w_left = w_idx * self.patch_size[1]
-        w_right = (w_idx + 1) * self.patch_size[1]
+        w_left = w_idx * self.patch_stride
+        w_right = w_idx * self.patch_stride + self.patch_size[1]
         if w_right > w:
             w_left = w - self.patch_size[1]
             w_right = w
@@ -95,18 +97,18 @@ class KalantariDataset(Dataset):
         # Get the input images
         in_LDR = np.zeros((self.patch_size[0], self.patch_size[1], c * self.num_shots))
         for j, in_LDR_path in enumerate(in_LDR_paths):
-            in_LDR[:, :, j * c:(j + 1) * c] = imread(in_LDR_path)[h_up:h_down, w_left:w_right, :]
+            in_LDR[:, :, j * c:(j + 1) * c] = get_image(in_LDR_path)[h_up:h_down, w_left:w_right, :]
         in_LDR = np.array(in_LDR).astype(np.float32)
 
         in_exp_path = os.path.join(cur_scene_dir, self.input_exp_name)
         in_exp = np.array(open(in_exp_path).read().split('\n')[:self.num_shots]).astype(np.float32)
 
-        ref_HDR = imread(os.path.join(cur_scene_dir, self.ref_hdr_name))[h_up:h_down, w_left:w_right, :]
+        ref_HDR = get_image(os.path.join(cur_scene_dir, self.ref_hdr_name))[h_up:h_down, w_left:w_right, :]
 
         ref_LDR_paths = sorted(glob(os.path.join(cur_scene_dir, self.ref_name)))
         ref_LDR = np.zeros((self.patch_size[0], self.patch_size[1], c * self.num_shots))
         for j, ref_LDR_path in enumerate(ref_LDR_paths):
-            ref_LDR[:, :, j * c:(j + 1) * c] = imread(ref_LDR_path)[h_up:h_down, w_left:w_right, :]
+            ref_LDR[:, :, j * c:(j + 1) * c] = get_image(ref_LDR_path)[h_up:h_down, w_left:w_right, :]
         ref_LDR = np.array(ref_LDR).astype(np.float32)
 
         ref_exp_path = os.path.join(cur_scene_dir, self.ref_exp_name)

@@ -71,7 +71,7 @@ This is a demo display of the testing dataset `002` using the model after 13 epo
 - [x] Training codes
 - [x] Evaluating while training
 - [x] Testing codes
-- [ ] Perform the patches calculation in need to save storage
+- [x] Perform the patches calculation in need to save storage
 - [x] Visualizing codes
 - [x] Code re-organization
 - [x] Sample
@@ -80,7 +80,7 @@ This is a demo display of the testing dataset `002` using the model after 13 epo
 
 ## Versions
 
-- **v0.6 (Current Version)**: Update demo display
+- v0.6 (Current Version): Update demo display
 - v0.5: Modify the codes to satisfy CUDA environment. 
 - v0.4: Complete  visualization codes.
 - v0.3: Complete testing codes.
