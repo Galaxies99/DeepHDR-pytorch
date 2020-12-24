@@ -21,11 +21,18 @@ test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=True)
 
 # Build DeepHDR model from configs
 model = DeepHDR(configs)
-device = torch.device('cuda:0' if torch.cuda.is_available() else "cpu")
-model.to(device)
+if configs.multigpu is True:
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    model.to(device)
+else:
+    devices = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    if devices == torch.device('cpu'):
+        raise EnvironmentError('No GPUs, cannot initialize multigpu training.')
+    model.to(devices)
+    model = torch.nn.DataParallel(model)
 
 # Define optimizer
-optimizer = optim.Adam(model.parameters(), betas=(configs.beta, 0.999), lr=configs.learning_rate)
+optimizer = optim.Adam(model.parameters(), betas=(configs.beta1, configs.beta2), lr=configs.learning_rate)
 
 # Define Criterion
 criterion = HDRLoss()
