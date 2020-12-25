@@ -70,8 +70,8 @@ def test_one_epoch():
         dump_sample(sample_path, res.cpu().detach().numpy())
 
         print('--------------- Test Batch %d ---------------' % (idx + 1))
-        print('loss: %.12f' % loss.cpu().detach().numpy())
-        mean_loss += loss.cpu().detach().numpy()
+        print('loss: %.12f' % loss.item())
+        mean_loss += loss.item()
         count += 1
 
     mean_loss = mean_loss / count
