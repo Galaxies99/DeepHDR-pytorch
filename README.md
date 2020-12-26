@@ -39,7 +39,7 @@ sh train.sh
 
 ### Test
 
-First, make sure that you have models (`checkpoint.tar`) under `checkpoint_dir` (which is defined in `Configs()`).
+Make sure that you have models (`checkpoint.tar`) under `checkpoint_dir` (which is defined in `Configs()`).
 
 ```bash
 sh test.sh
@@ -55,6 +55,12 @@ Generated HDR images are in `.hdr` format, which may not be properly displayed i
 - Load the generated `.hdr` file in Photomatix.
 - Adjust the parameter settings. You may refer to pre-defined styles, such as `Detailed` and `Painterly2`.
 - Save your final image in `.tif` or `.jpg`.
+
+### Metric Calculation
+
+```bash
+python calc_metric.py --gt_path [Ground Truth Path] --test_path [Test File Path]
+```
 
 ## Sample
 
@@ -87,7 +93,8 @@ This is a demo display of the testing dataset `002` using the model after only 1
 
 ## Versions
 
-- **v0.9 (Current Version)**: Add some necessary scripts.
+- **v0.10 (Current Version)**: Add metrics support.
+- v0.9: Add some necessary scripts.
 - v0.8: Add multi-gpu support.
 - v0.7: Update dataset selection and fix some bugs.
 - v0.6: Update demo display.
