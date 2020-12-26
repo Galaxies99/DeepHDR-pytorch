@@ -10,7 +10,22 @@ from utils.dataprocessor import dump_sample
 from dataset.HDR import KalantariDataset, KalantariTestDataset
 from models.DeepHDR import DeepHDR
 from utils.configs import Configs
+import random
+import numpy as np
 
+
+def setup_seed(seed=0):
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+
+
+setup_seed()
 
 # Get configurations
 configs = Configs()
