@@ -25,8 +25,6 @@ def setup_seed(seed=0):
     torch.backends.cudnn.deterministic = True
 
 
-setup_seed()
-
 # Get configurations
 configs = Configs()
 
