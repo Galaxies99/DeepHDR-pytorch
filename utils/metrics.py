@@ -3,17 +3,17 @@ import math
 import cv2
 
 
-def PSNR(pred, gt, mode="L"):
-    mse = np.mean((pred - gt) ** 2)
-    if mode == "L":
-        range = 1
-    elif mode == "T":
-        range = 255
-    return 20 * math.log10(range / math.sqrt(mse))
+class PSNR():
+    def __init__(self, range=1):
+        self.range = range
+
+    def __call__(self, img1, img2):
+        mse = np.mean((img1 - img2) ** 2)
+        return 20 * math.log10(self.range / math.sqrt(mse))
 
 
 class SSIM():
-    def __init__(self, range):
+    def __init__(self, range=1):
         self.range = range
 
     def __call__(self, img1, img2):
@@ -54,11 +54,3 @@ class SSIM():
             (mu1_sq + mu2_sq + C1) * (sigma1_sq + sigma2_sq + C2)
         )
         return ssim_map.mean()
-
-class SSIM_L(SSIM):
-    def __init__(self):
-        super(SSIM, self).__init__(1)
-
-class SSIM_T(SSIM):
-    def __init__(self):
-        super(SSIM, self).__init__(255)

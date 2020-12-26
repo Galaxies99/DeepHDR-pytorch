@@ -2,7 +2,7 @@ import cv2
 import os
 import argparse
 from utils.dataprocessor import *
-from utils.metric import *
+from utils.metrics import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--gt_path', type=str, default='data/kalantari_dataset/test')
