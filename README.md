@@ -16,7 +16,12 @@ This repository is the re-implementation of DeepHDR [1] using PyTorch framework.
 
 ### Download Dataset
 
-The Kalantari Dataset can be downloaded from https://www.robots.ox.ac.uk/~szwu/storage/hdr/kalantari_dataset.zip [2].
+The Kalantari Dataset can be downloaded from https://www.robots.ox.ac.uk/~szwu/storage/hdr/kalantari_dataset.zip [2], or you can execute the following commands to download it.
+
+```bash
+cd data
+sh get_data.sh
+```
 
 ### Dataset Model Selection
 
@@ -29,19 +34,15 @@ You may modify the arguments in `Configs()` to satisfy your own environment, for
 ### Train
 
 ```bash
-export CUDA_VISIBLE_DEVICES=0
-python3 train.py
+sh train.sh
 ```
-
-**Note**. 
 
 ### Test
 
 First, make sure that you have models (`checkpoint.tar`) under `checkpoint_dir` (which is defined in `Configs()`).
 
 ```bash
-export CUDA_VISIBLE_DEVICES=0
-python3 test.py
+sh test.sh
 ```
 
 **Note**. `test.py` will dump the result images in `sample` folder.
@@ -62,13 +63,13 @@ This is a demo display of the testing dataset `002` using the model after only 1
 **Original Image**
 
 <table>
-  <tr><td align="center"> LDR Image </td><td><img src='sample/002/input_1_aligned.tif'></td><td><img src='sample/002/input_2_aligned.tif'></td><td><img src='sample/002/input_3_aligned.tif'></td></tr>
+  <tr><td align="center"> LDR Image </td><td><img src='demo/002/input_1_aligned.tif'></td><td><img src='demo/002/input_2_aligned.tif'></td><td><img src='demo/002/input_3_aligned.tif'></td></tr>
   <tr><td align="center"> Exposure Bias</td><td align="center">0</td><td align="center">3</td><td align="center">6</td></td></tr>
 </table>
 
 **HDR Image (after tonemapping)**
 
-<img src='sample/002/hdr_tonemapping.jpg' style="zoom:30%">
+<img src='demo/002/hdr_tonemapping.jpg' style="zoom:30%">
 
 ## To-dos
 
@@ -79,13 +80,15 @@ This is a demo display of the testing dataset `002` using the model after only 1
 - [x] Visualizing codes
 - [x] Code re-organization
 - [x] Sample
+- [x] Scripts
 - [ ] Command-line configurations support
 - [ ] Pre-trained model upload
 - [x] Multi-gpu support
 
 ## Versions
 
-- **v0.8 (Current Version)**: Add multi-gpu support.
+- **v0.9 (Current Version)**: Add some necessary scripts.
+- v0.8: Add multi-gpu support.
 - v0.7: Update dataset selection and fix some bugs.
 - v0.6: Update demo display.
 - v0.5: Modify the codes to satisfy CUDA environment. 

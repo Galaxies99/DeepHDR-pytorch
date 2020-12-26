@@ -1,7 +1,7 @@
 import os
 
 class Configs(object):
-    def __init__(self, data_path='/home/ubuntu/benchmark/kalantari_dataset/',
+    def __init__(self, data_path='data',
                  **kwargs):
         self.data_path = data_path
         self.epoch = kwargs.get('epoch', 50)

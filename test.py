@@ -12,8 +12,6 @@ from utils.configs import Configs
 
 # Get configurations
 configs = Configs()
-# configs = Configs(data_path='/Users/galaxies/Documents/Benchmark/kalantari_dataset')
-
 
 # Load dataset
 test_dataset = KalantariTestDataset(configs=configs)
