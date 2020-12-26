@@ -46,7 +46,6 @@ else:
     if device == torch.device('cpu'):
         raise EnvironmentError('No GPUs, cannot initialize multigpu training.')
     model.to(device)
-    model = torch.nn.DataParallel(model)
 
 # Define optimizer
 optimizer = optim.Adam(model.parameters(), betas=(configs.beta1, configs.beta2), lr=configs.learning_rate)
@@ -67,7 +66,10 @@ if os.path.isfile(checkpoint_file):
     start_epoch = checkpoint['epoch']
     lr_scheduler.load_state_dict(checkpoint['scheduler'])
     print("Load checkpoint %s (epoch %d)", checkpoint_file, start_epoch)
-    
+
+
+if configs.multigpu is True:
+    model = torch.nn.DataParallel(model)
 
 
 def train_one_epoch():
