@@ -16,7 +16,7 @@ This repository is the re-implementation of DeepHDR [1] using PyTorch framework.
 
 ### Download Dataset
 
-The Kalantari Dataset can be downloaded from https://www.robots.ox.ac.uk/~szwu/storage/hdr/kalantari_dataset.zip [2], or you can execute the following commands to download it.
+The Kalantari Dataset can be downloaded from [https://www.robots.ox.ac.uk/~szwu/storage/18_hdr/kalantari_dataset.zip](https://www.robots.ox.ac.uk/~szwu/storage/18_hdr/kalantari_dataset.zip) [2], or you can execute the following commands to download it.
 
 ```bash
 cd data
